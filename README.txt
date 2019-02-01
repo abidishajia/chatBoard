@@ -1,4 +1,4 @@
-## Setup Project:
+##Setup Project:
 ### Install Vagrant and VirtualBox
 ### Download or Clone this repository and cd into the folder
 
