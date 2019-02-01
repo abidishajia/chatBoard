@@ -1,9 +1,9 @@
 {% include "categories.html" %}
 
     <form action="#" method="POST" class="form">
-        <input type="text" maxlength="100" name="name" placeholder="Name">
+        <input type="text" maxlength="100" name="name" placeholder="Name" required>
 
-        <input type="text" maxlength="250" name="description" placeholder="Description">
+        <input type="text" maxlength="250" name="description" placeholder="Description" required>
 
         <input type="submit" name="Create">
         <a href="{{url_for('showItems', category_id=category_id)}}" class="cancel">
