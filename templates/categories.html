@@ -1,8 +1,43 @@
-<html>
-    <body>
-        <h1> Categories </h1>
-        {% for category in categories %}
-        <p> {{category.name}} </p>
-        {% endfor %}
-    </body>
-</html>
+{% extends "main.html" %}
+{% block content %}
+
+<div class="wrapper">
+
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3><a href="{{url_for('showCategories')}}">chatBoard</a></h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            {% for category in categories %}
+            <li class="nav-item">
+                <a href="{{url_for('showItems', category_id = category.id )}}" class="nav-link">
+                    {{category.name}}
+                </a>
+            </li>
+            {% endfor %}
+            <li class="nav-item">
+                    {%if 'username' not in session %}
+                        <a href="{{url_for('showLogin')}}" class="nav-link">
+                            Login
+                        </a>
+                    {% else %}
+                        <a href="{{url_for('gdisconnect')}}" class="nav-link">
+                            Logout
+                        </a>
+					{% endif %}
+                <!-- <a href="#" class"nav-link">
+                    Login
+                </a> -->
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+
+
+
+<!-- {% include "landingPage.html" %} -->
+
+{% endblock %}

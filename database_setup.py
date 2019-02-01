@@ -57,7 +57,7 @@ class Post(Base):
 
     id = Column(Integer, primary_key=True)
     post = Column(String(250), nullable=False)
-    date = Column(DateTime, default=datetime.datetime.now)
+    date = Column(DateTime, default=datetime.datetime.now())
     # username = Column(String(250), nullable=False)
     item_id = Column(Integer, ForeignKey('item.id'))
     item = relationship(Item)

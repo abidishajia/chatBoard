@@ -1,0 +1,228 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+    display: flex;
+    flex-direction: row;
+    align-items: center !important;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+#sidebar {
+    /* don't forget to add all the previously mentioned styles here too */
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+    display: inline-block;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #6d7fcc;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .column {
+    flex-basis: 100%;
+  }
+  
+  @media screen and (min-width: 800px) {
+    .column {
+      flex: 1;
+    }
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: auto;
+    padding: 0;
+    justify-content: center;
+  }
+  
+  .cards__item {
+    display: flex;
+    padding: 1rem;
+    /* width: 75%; */
+  }
+
+  .card {
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 20px 40px -14px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .card__content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    padding: 1rem;
+    position: relative;
+  }
+  
+  .card__title {
+    color: #696969;
+    font-size: 1.25rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding-top: 15px;
+  }
+  
+  .card__text {
+    flex: 1 1 auto;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  i{
+    position:absolute;
+    top:5;
+    color: gainsboro;
+  }
+
+  i:hover{
+      color: gray;
+  }
+
+  .fa-edit{
+    right:3px;
+  }
+
+  .fa-times{
+    right: 26px;
+  }
+  
+  .form{
+    background: #FFFFFF;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    /* height: 150px; */
+  }
+
+  .form input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  .form input[type=submit]{
+      background-color:  #6d7fcc;
+      width: 30%;
+      color: fff;
+  }
+
+  .form input[type=submit]:hover{
+      background-color: fff;
+      color: #6d7fcc;
+      cursor: pointer;
+  }
+
+  .cancel{
+    width: 30%;
+    color:  #6d7fcc;
+  }
+
+  .addItem i{
+    right: 40;
+    top: 20;
+    font-size: 3em;
+  }
+
+  .postLists{
+      list-style: none;
+      width: 980px;
+  }
+
+  .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    width: 50vw;
+    position: relative;
+    margin: 5px;
+    padding-left: 5px;
+  }
+
+  .time-right{
+    position: absolute;
+    right: 7px;
+    bottom: 1px;
+    color: #aaa;
+    font-size: 12px;
+
+  }

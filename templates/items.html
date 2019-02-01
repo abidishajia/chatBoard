@@ -1,9 +1,36 @@
-<html>
-    <body>
-        <h1> {{category.name}} </h1>
+{% include "categories.html" %}
+
+<div style="order:1; flex-grow: 1;  text-align: center;">
+
+    <h1> {{category.name}} </h1>
+
+    <ul class="cards">
         {% for item in items %}
-        <h4> {{item.name}} </h4>
-        <p> {{item.description}} </p>
+        <li class="cards__item">
+            <div class="card">
+                <div class="card__content">
+                    <a href="{{url_for('editItem', category_id=category.id, item_id=item.id)}}">
+                        <i class="far fa-edit"></i>
+                    </a>
+                    <a href="{{url_for('deleteItem', category_id=category.id, item_id=item.id)}}">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    <div class="card__title">
+                        <a href="{{url_for('showPosts', category_id=category_id, item_id=item.id)}}">
+                            {{item.name}}
+                        </a>
+                    </div>
+                    <p class="card__text">{{item.description}}</p>
+                </div>
+            </div>
+        </li>
         {% endfor %}
-    </body>
-</html>
+    </ul>
+
+</div>
+
+<div style="order:2;" class="addItem">
+    <a href="{{url_for('newItem', category_id=category.id)}}">
+        <i class="fas fa-plus-circle" style="font-size: 2em;"></i>
+    </a>
+</div>

@@ -1,0 +1,12 @@
+{% include "categories.html" %}
+
+    <form action="#" method="POST" class="form">
+        <h4> {{item.name}}</h4>
+        <input type="text" maxlength="100" name="post" placeholder="Post">
+
+        <input type="submit" name="Create">
+        <a href="{{url_for('showPosts', category_id=category_id, item_id=item_id)}}" class="cancel">
+            Cancel
+        </a>
+    </form>
+
