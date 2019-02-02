@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect
 from flask import jsonify, url_for, flash, session as login_session
 import random
 import string
-
+from functools import wraps
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
@@ -26,6 +26,28 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 
 @app.route('/login')
@@ -91,7 +113,7 @@ def gconnect():
     if stored_access_token is not None and gplus_id == stored_gplus_id:
         response = make_response(
                    json.dumps('Current user is already connected.'),
-                                 200)
+                              200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -127,28 +149,6 @@ def gconnect():
     return output
 
 
-def createUser(login_session):
-    newUser = User(name=login_session['username'], email=login_session[
-                   'email'], picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    return user.id
-
-
-def getUserInfo(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
-
-
-def getUserID(email):
-    try:
-        user = session.query(User).filter_by(email=email).one()
-        return user.id
-    except:
-        return None
-
-
 @app.route('/gdisconnect')
 def gdisconnect():
     categories = session.query(Category).order_by(asc(Category.name))
@@ -158,7 +158,8 @@ def gdisconnect():
                    json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s'
+           % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
@@ -172,7 +173,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return redirect(url_for('showCategories', categories=categories))
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -184,11 +186,25 @@ def categoryJSON():
     return jsonify(Category=[i.serialize for i in category])
 
 
+@app.route('/chatboard/<int:category_id>/JSON')
+def categoryOneJSON(category_id):
+    category = session.query(Category).filter_by(id=category_id).all()
+    return jsonify(Category=[i.serialize for i in category])
+
+
 @app.route('/chatboard/<int:category_id>/item/JSON')
-def categoryItemJSON(category_id):
+def categoryItemsJSON(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category_id).all()
     return jsonify(Items=[i.serialize for i in items])
+
+
+@app.route('/chatboard/<int:category_id>/item/<int:item_id>/JSON')
+def categoryItemJSON(category_id, item_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = session.query(Item).filter_by(category_id=category_id).all()
+    item = session.query(Item).filter_by(id=item_id).all()
+    return jsonify(Items=[i.serialize for i in item])
 
 
 # Main app routes
@@ -205,12 +221,15 @@ def showItems(category_id):
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(category_id=category_id).all()
+
+    # creator = getUserInfo(category.user_id)
     return render_template(
-            'items.html',
-            items=items,
-            category=category,
-            categories=categories,
-            category_id=category_id)
+                'items.html',
+                items=items,
+                category=category,
+                categories=categories,
+                category_id=category_id,
+               )
 
 
 @app.route('/chatboard/<int:category_id>/item/newItem',
@@ -220,14 +239,15 @@ def newItem(category_id):
         return redirect('/login')
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
+
     if request.method == 'POST':
         newItem = Item(name=request.form['name'],
                        description=request.form['description'],
-                       category_id=category_id)
+                       category_id=category_id,
+                       user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash("created a new item")
-        print("created a new item")
         return redirect(url_for('showItems', category_id=category_id))
 
     return render_template(
@@ -241,8 +261,16 @@ def newItem(category_id):
 def editItem(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
+
     categories = session.query(Category).order_by(asc(Category.name))
     editedItem = session.query(Item).filter_by(id=item_id).first()
+
+    creator = getUserInfo(editedItem.user_id)
+
+    if creator.id != login_session['user_id']:
+        flash("Only the owner can edit this item.")
+        return redirect(url_for('showItems', category_id=category_id))
+
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -271,6 +299,11 @@ def deleteItem(category_id, item_id):
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
     itemToDelete = session.query(Item).filter_by(id=item_id).first()
+
+    creator = getUserInfo(itemToDelete.user_id)
+    if creator.id != login_session['user_id']:
+        flash("Only the owner can delete this item.")
+        return redirect(url_for('showItems', category_id=category_id))
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
@@ -290,14 +323,14 @@ def showPosts(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(category_id=category_id).all()
     posts = session.query(Post).filter_by(item_id=item_id).all()
-
     return render_template(
         'posts.html',
         item=item,
         category=category,
         posts=posts,
         categories=categories,
-        item_id=item_id)
+        item_id=item_id,
+        category_id=category_id)
 
 
 @app.route('/chatboard/<int:category_id>/item/<int:item_id>/posts/newPost',
@@ -306,13 +339,15 @@ def newPost(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
     categories = session.query(Category).order_by(asc(Category.name))
-    # category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(category_id=category_id).first()
 
     if request.method == 'POST':
-        newPost = Post(post=request.form['post'], item_id=item_id)
+        newPost = Post(post=request.form['post'],
+                       item_id=item_id,
+                       user_id=login_session['user_id'])
         session.add(newPost)
         session.commit()
+        print('USER ID: ', login_session['user_id'])
         return redirect(url_for(
             'showPosts',
             category_id=category_id,
@@ -331,8 +366,16 @@ def newPost(category_id, item_id):
 def editPost(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
+
     categories = session.query(Category).order_by(asc(Category.name))
     editedPost = session.query(Post).filter_by(id=item_id).first()
+
+    # creator = getUserInfo(editedPost.user_id)
+    # if creator.id != login_session['user_id']:
+    #     flash ("Only the owner can edit this item.)
+    #     return redirect(url_for('showPosts',
+    #     category_id=category_id,item_id=item_id))
+
     if request.method == 'POST':
         if request.form['post']:
             editedPost.post = request.form['post']
@@ -341,7 +384,8 @@ def editPost(category_id, item_id):
         return redirect(url_for(
             'showPosts',
             category_id=category_id,
-            item_id=item_id))
+            item_id=item_id,
+            categories=categories))
 
     return render_template(
             'editPost.html',
@@ -361,6 +405,10 @@ def deletePost(category_id, item_id):
     category = session.query(Category).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).first()
     postToDelete = session.query(Post).filter_by(id=item_id).first()
+
+    creator = getUserInfo(postToDelete.user_id)
+    if creator.id != login_session['user_id']:
+        return redirect('/login')
 
     if request.method == 'POST':
         session.delete(postToDelete)

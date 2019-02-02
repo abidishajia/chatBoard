@@ -1,5 +1,15 @@
 {% include "categories.html" %}
 
+<!-- {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %} -->
+
 <form method="POST" action='#' class="form">
     <input type='text' size='30' name='name' placeholder='{{item.name }}'>
 

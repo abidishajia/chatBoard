@@ -1,0 +1,16 @@
+{% include "categories.html" %}
+
+<ul class="postLists">
+	{% for post in posts %}
+	<li class="container">
+
+		<div>
+			<p>{{post.post}} </p>
+			<span class="time-right">Posted on {{ '{:%Y-%m-%d %H:%M:%S}'.format(post.date) }}</span>
+		</div>
+
+	</li>
+	{% endfor %}
+</ul>
+
+

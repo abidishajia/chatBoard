@@ -27,3 +27,18 @@
     </a>
 </div>
 
+<div class="message" style="position: absolute; top: 0; left: 500;">
+
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes style="list-style: none;">
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+	
+	
+	</div>
+
