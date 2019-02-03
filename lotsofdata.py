@@ -9,9 +9,10 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-#Dummy User
+# Dummy User
 User1 = User(name="Robo Barista", email="tinnyTim@udacity.com",
-             picture='https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png')
+             picture="""https://pbs.twimg.com/profile_images/
+             2671170543/18debd694829ed78203a5a36dd364160_400x400.png""")
 session.add(User1)
 session.commit()
 
@@ -20,7 +21,9 @@ Social = Category(id=1, name="Social", user_id=1)
 session.add(Social)
 session.commit()
 
-Outdoor_Activities = Item(name="Outdoor Activities", description="This forum is deticated to talk about outdoor activities", category_id=1, id=1, user_id=1)
+Outdoor_Activities = Item(name="Outdoor Activities",
+                          description="Outdoor activities",
+                          category_id=1, id=1, user_id=1)
 session.add(Outdoor_Activities)
 session.commit()
 
@@ -28,7 +31,9 @@ Post1 = Post(post="Today is a good day to go to a beach", item_id=1, user_id=1)
 session.add(Post1)
 session.commit()
 
-Social_Media = Item(name="Social Media", description="This forum is deticated to talk about anything social media", category_id=1, id=2, user_id=1)
+Social_Media = Item(name="Social Media",
+                    description="Social media",
+                    category_id=1, id=2, user_id=1)
 session.add(Social_Media)
 session.commit()
 
@@ -42,19 +47,24 @@ Tech = Category(id=2, name="Tech", user_id=1)
 session.add(Tech)
 session.commit()
 
-Tech_News = Item(name="Tech News", description="What's new in the tech industry?", category_id=2, id=3, user_id=1)
+Tech_News = Item(name="Tech News",
+                 description="What's new in the tech industry?",
+                 category_id=2, id=3, user_id=1)
 session.add(Tech_News)
 session.commit()
 
-Post3 = Post(post="Did you guys see Elon Musk's new statement?", item_id=3, user_id=1)
+Post3 = Post(post="Did you guys see Elon Musk's new statement?",
+             item_id=3, user_id=1)
 session.add(Post3)
 session.commit()
 
-Products = Item(name="Products", description="This forum is deticated to tech products", category_id=2,id=4, user_id=1 )
+Products = Item(name="Products", description="Tech products",
+                category_id=2, id=4, user_id=1)
 session.add(Products)
 session.commit()
 
-Post4 = Post(post="Did you guys see the new iPhone feature?", item_id=4, user_id=1)
+Post4 = Post(post="Did you guys see the new iPhone feature?",
+             item_id=4, user_id=1)
 session.add(Post4)
 session.commit()
 
@@ -65,7 +75,8 @@ News = Category(id=3, name="News", user_id=1)
 session.add(News)
 session.commit()
 
-Local = Item(name="Local", description="What's happening in the US?", category_id=3, id=5, user_id=1)
+Local = Item(name="Local", description="What's happening in the US?",
+             category_id=3, id=5, user_id=1)
 session.add(Local)
 session.commit()
 
@@ -73,7 +84,9 @@ Post5 = Post(post="Did you guys see local governemnt?", item_id=5, user_id=1)
 session.add(Post5)
 session.commit()
 
-International = Item(name="International", description="What's happening in the world?", category_id=3, id=6, user_id=1)
+International = Item(name="International",
+                     description="What's happening in the world?",
+                     category_id=3, id=6, user_id=1)
 session.add(International)
 session.commit()
 
@@ -88,7 +101,8 @@ Entertainment = Category(id=4, name="Entertainment", user_id=1)
 session.add(Entertainment)
 session.commit()
 
-Books = Item(name="Books", description="What are you reading these days??", category_id=4, id=7, user_id=1)
+Books = Item(name="Books", description="What are you reading these days??",
+             category_id=4, id=7, user_id=1)
 session.add(Books)
 session.commit()
 
@@ -97,15 +111,13 @@ Post7 = Post(post="Harry Potter new realease?", item_id=7, user_id=1)
 session.add(Post7)
 session.commit()
 
-Movies = Item(name="Movies", description="What are you watching these days??", category_id=4, id=8, user_id=1)
+Movies = Item(name="Movies", description="What are you watching these days??",
+              category_id=4, id=8, user_id=1)
 session.add(Movies)
 session.commit()
 
 Post8 = Post(post="Harry Potter?", item_id=8, user_id=1)
 session.add(Post8)
 session.commit()
-
-
-
 
 print("Added data")
